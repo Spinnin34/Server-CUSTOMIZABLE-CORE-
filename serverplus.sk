@@ -1,0 +1,134 @@
+# Created by Currano (https://www.spigotmc.org/members/currano.1979074/)
+# Version: 1.0
+
+options:
+    joinmessage: "&2%player%&a joined the server."
+    quitmessage: "&2%player%&a left the server."
+    maxHealth: 10 #number of maximium hearts
+
+on script load:
+    send "[Server+] Skript enabled" to the console
+
+on stop:
+    send "[Server+] Skript disabled" to the console
+
+on join:
+    set join message to {@joinmessage}
+
+on quit:
+    set quit message to {@quitmessage}
+
+on chat:
+    if {staffchat::%player%} is true:
+        cancel event
+        loop all players:
+            if loop-player has permission "staffchat.use":
+                send "&4&lSTAFF &c%player% &7» &f%message%" to loop-player
+
+command /gamemode [<text>]:
+    permission: gamemode.use
+    permission message: "&cYou do not have permission to execute this command."
+    aliases: gm
+    trigger:
+        if arg-1 is "1" or "creative":
+            set the player's gamemode to creative
+        if arg-1 is "0" or "survival":
+            set the player's gamemode to survival
+        if arg-1 is "3" or "spectator":
+            set the player's gamemode to spectator
+        if arg-1 is not "1" or "0" or "3" or "creative" or "survival" or "spectator":
+            send "&4&lERROR! &cUsage: /gamemode <creative/survival/spectator>"
+
+command /gmc:
+    permission: gamemode.use
+    permission message: "&cYou do not have permission to execute this command."
+    trigger:
+        set player's gamemode to creative
+
+command /gms:
+    permission: gamemode.use
+    permission message: "&cYou do not have permission to execute this command."
+    trigger:
+        set player's gamemode to survival
+
+command /gmsp:
+    permission: gamemode.use
+    permission message: "&cYou do not have permission to execute this command."
+    trigger:
+        set player's gamemode to spectator
+
+command /heal [<player>]:
+    permission: heal.use
+    permission message: "&cYou do not have permission to execute this command."
+    trigger:
+        if arg-1 is not set:
+            set the player's health to {@maxHealth}
+            feed the player
+        if arg-1 is a player:
+            set the arg-1's health to {@maxHealth}
+            feed the arg-1
+        if arg-1 is set:
+            if arg-1 is not a player:
+                send "&cUsage: /heal <player>"
+
+command /feed [<player>]:
+    permission: feed.use
+    permission message: "&cYou do not have permission to execute this command."
+    trigger:
+        if arg-1 is not set:
+            feed the player
+        if arg-1 is a player:
+            feed the arg-1
+        if arg-1 is set:
+            if arg-1 is not a player:
+                send "&cUsage: /feed <player>"
+
+command /teleport [<player>]:
+    permission: teleport.use
+    permission message: "&cYou do not have permission to execute this command."
+    aliases: tp
+    trigger:
+        if arg-1 is set:
+            teleport the player to arg-1
+        if arg-1 is set:
+            if arg-1 is not a player:
+                send "&cUsage: /teleport <player>"
+        else:
+            send "&cUsage: /teleport <player>"
+
+command /staffchat [<text>]:
+    permission: staffchat.use
+    permission message: "&cYou do not have permission to execute this command."
+    aliases: sc
+    trigger:
+        if arg-1 is set:
+            loop all players:
+                if loop-player has permission "staffchat.use":
+                    send "&4&lSTAFF &c%player% &7» &f%arg-1%" to loop-player
+        else if arg-1 is not set:
+            if {staffchat::%player%} is false:
+                set {staffchat::%player%} to true
+                send "&aStaffChat Enabled"
+            else:
+                set {staffchat::%player%} to false
+                send "&cStaffChat Disabled"
+        else:
+            send "&cUsage: /staffchat <message>"
+
+command /vanish:
+    permission: vanish.use
+    permission message: "&cYou do not have permission to execute this command"
+    aliases: v
+    trigger:
+        if {vanish::%player%} is not set:
+            set {vanish::%player%} to true
+            apply potion of invisibility of tier 1 to the player for 999999 seconds
+            send "&aVanish Enabled"
+        if {vanish::%player%} is true:
+            clear all the potion effects of player
+            set {vanish::%player%} to false
+            send "&cVanish Disabled"
+        else if {vanish::%player%} is false:
+            apply potion of invisibility of tier 1 to the player for 999999 seconds
+            set {vanish::%player%} to true
+            send "&aVanish Enabled"
