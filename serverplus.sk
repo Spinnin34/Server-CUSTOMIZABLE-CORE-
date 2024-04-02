@@ -1,6 +1,3 @@
-# Created by Currano (https://www.spigotmc.org/members/currano.1979074/)
-# Version: 1.0
-
 options:
     joinmessage: "&2%player%&a joined the server."
     quitmessage: "&2%player%&a left the server."
